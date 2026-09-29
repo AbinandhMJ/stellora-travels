@@ -1,0 +1,12 @@
+import {cpSync,mkdirSync,writeFileSync,rmSync} from 'node:fs';
+rmSync('release/public_html',{recursive:true,force:true});
+mkdirSync('release/public_html/api',{recursive:true});
+cpSync('dist/browser','release/public_html',{recursive:true});
+cpSync('backend/enquiry.php','release/public_html/api/enquiry.php');
+cpSync('backend/.htaccess','release/public_html/.htaccess');
+mkdirSync('release/stellora-private',{recursive:true});
+cpSync('backend/config.example.php','release/stellora-private/config.example.php');
+cpSync('backend/vendor','release/stellora-private/vendor',{recursive:true});
+cpSync('backend/composer.json','release/stellora-private/composer.json');
+writeFileSync('release/stellora-private/.htaccess','Require all denied\n');
+console.log('Hostinger package prepared in release/.');

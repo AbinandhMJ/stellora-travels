@@ -1,0 +1,32 @@
+Stellora Travels: image sources
+
+All destination images have been resized and encoded as WebP. CSS may crop their presentation. These adapted images retain their original licences. Vehicle illustrations are generated and do not depict an actual Stellora fleet.
+
+Kanyakumari: Vivekanand Rock Memorial Landscape
+Photographer: Prshrivastava
+https://commons.wikimedia.org/wiki/File:Vivekanand_Rock_Memorial_Landscape.jpg
+CC BY-SA 4.0: https://creativecommons.org/licenses/by-sa/4.0/
+
+Trivandrum: PadmanabhaswamyTemple20080222-1
+Photographer: Hans A. Rosbach
+https://commons.wikimedia.org/wiki/File:PadmanabhaswamyTemple20080222-1.jpg
+CC BY-SA 3.0: https://creativecommons.org/licenses/by-sa/3.0/
+
+Kovalam Beach, Trivandrum, Kerala, India
+Photographer: Nikhilb239
+https://commons.wikimedia.org/wiki/File:Kovalam_Beach,_Trivandrum,_Kerala,_India.jpg
+CC BY-SA 4.0: https://creativecommons.org/licenses/by-sa/4.0/
+
+Varkala Cliff
+Photographer: Emmanuel DYAN
+https://commons.wikimedia.org/wiki/File:Varkala_Cliff.jpg
+CC BY 2.0: https://creativecommons.org/licenses/by/2.0/
+
+Poovar backwaters, Kerala, India
+Photographer: Arindambasu2
+https://commons.wikimedia.org/wiki/File:Poovar_backwaters,_Kerala,_India.jpg
+CC BY-SA 4.0: https://creativecommons.org/licenses/by-sa/4.0/
+
+Icons: Tabler Icons, MIT licence. https://tabler.io/icons
+Fonts: DM Sans and Manrope, SIL Open Font License, distributed by Fontsource.
+Logo: user-supplied Stellora Travels logo, background cleaned for web display.

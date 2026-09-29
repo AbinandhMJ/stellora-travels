@@ -1,0 +1,27 @@
+Options -Indexes
+DirectoryIndex index.html
+<IfModule mod_rewrite.c>
+RewriteEngine On
+# Existing PHP endpoints and static assets must not pass through Angular.
+RewriteRule ^api/ - [L]
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+# Missing assets should return a real 404, not the SPA document.
+RewriteRule \.(?:js|css|png|jpg|jpeg|webp|svg|woff2?|json|txt|php)$ - [L,NC]
+RewriteRule ^ index.html [L]
+</IfModule>
+<IfModule mod_headers.c>
+Header always set X-Content-Type-Options "nosniff"
+Header always set Referrer-Policy "strict-origin-when-cross-origin"
+Header always set X-Frame-Options "SAMEORIGIN"
+Header always set Permissions-Policy "camera=(), microphone=(), geolocation=()"
+</IfModule>
+<IfModule mod_expires.c>
+ExpiresActive On
+ExpiresByType image/webp "access plus 1 month"
+ExpiresByType font/woff2 "access plus 1 year"
+</IfModule>
+<FilesMatch "^(?:\.env|config\.php|composer\.(?:json|lock))$">
+Require all denied
+</FilesMatch>

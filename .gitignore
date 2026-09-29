@@ -1,0 +1,8 @@
+node_modules/
+.angular/
+out-tsc/
+dist/
+release/
+config.php
+.env*
+!.env.example
