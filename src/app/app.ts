@@ -1,7 +1,15 @@
-import {Component,signal,inject,HostListener} from '@angular/core';
+import {Component,signal,inject,HostListener,PLATFORM_ID,afterNextRender} from '@angular/core';
+import {isPlatformBrowser} from '@angular/common';
 import {RouterOutlet,RouterLink,RouterLinkActive,Router,NavigationEnd} from '@angular/router';
 import {Meta} from '@angular/platform-browser';
+import {SmoothScroll} from './smooth-scroll';
 import {IconComponent} from './icon';
+const PAGES:Record<string,{title:string;desc:string}>={
+ '/':{title:'Stellora Travels | Kanyakumari Car & Bike Rentals',desc:'Explore Kanyakumari and Trivandrum with Stellora Travels. Car and bike rentals, airport transfers and customised tours.'},
+ '/about-us':{title:'About Us | Stellora Travels',desc:'Meet Stellora Travels, your Kanyakumari base for car and bike rentals, tours and travel assistance.'},
+ '/services':{title:'Travel Services & Rentals | Stellora Travels',desc:'Explore Stellora car and bike rentals, airport drops, customised tours, wedding transport and booking assistance.'},
+ '/contact-us':{title:'Plan Your Trip | Stellora Travels',desc:'Send your travel enquiry to Stellora Travels in Kanyakumari. Office hours: 5 AM to 12 noon IST.'}
+};
 @Component({selector:'app-root',standalone:true,imports:[RouterOutlet,RouterLink,RouterLinkActive,IconComponent],template:`
 <a class="skip-link" href="#main">Skip to content</a>
 <div class="scroll-progress" aria-hidden="true"><span [style.width.%]="scrollProgress()"></span></div>
@@ -19,9 +27,25 @@ import {IconComponent} from './icon';
 <a class="floating-contact" href="https://wa.me/918939783708?text=Hello%20Stellora%20Travels%2C%20I%27d%20like%20to%20enquire%20about%20a%20trip." target="_blank" rel="noopener" aria-label="Enquire on WhatsApp"><st-icon name="brand-whatsapp"/><span>Let's talk travel</span></a>
 `})
 export class AppComponent{
- menuOpen=signal(false);creditsOpen=signal(false);scrollProgress=signal(0);showBackToTop=signal(false);year=new Date().getFullYear();private router=inject(Router);private meta=inject(Meta);
- constructor(){this.router.events.subscribe(e=>{if(e instanceof NavigationEnd){this.menuOpen.set(false);setTimeout(()=>this.updateScrollState());const url=e.urlAfterRedirects.split('?')[0];const desc=url==='/about-us'?'Meet Stellora Travels, your Kanyakumari base for car and bike rentals, tours and travel assistance.':url==='/services'?'Explore Stellora car and bike rentals, airport drops, customised tours, wedding transport and booking assistance.':url==='/contact-us'?'Send your travel enquiry to Stellora Travels in Kanyakumari. Office hours: 5 AM to 12 noon IST.':'Explore Kanyakumari and Trivandrum with Stellora Travels. Car and bike rentals, airport transfers and customised tours.';this.meta.updateTag({name:'description',content:desc});}});}
+ menuOpen=signal(false);creditsOpen=signal(false);scrollProgress=signal(0);showBackToTop=signal(false);year=new Date().getFullYear();
+ private router=inject(Router);private meta=inject(Meta);private smooth=inject(SmoothScroll);private browser=isPlatformBrowser(inject(PLATFORM_ID));
+ constructor(){
+  afterNextRender(()=>{this.smooth.start();this.updateScrollState();});
+  this.router.events.subscribe(e=>{if(e instanceof NavigationEnd){
+   this.menuOpen.set(false);
+   const path=e.urlAfterRedirects.split('?')[0].split('#')[0];const url=path||'/';const hasFragment=e.urlAfterRedirects.includes('#');
+   const page=PAGES[url]??PAGES['/'];
+   this.meta.updateTag({name:'description',content:page.desc});
+   this.meta.updateTag({property:'og:title',content:page.title});
+   this.meta.updateTag({property:'og:description',content:page.desc});
+   if(this.browser){if(!hasFragment)this.smooth.scrollTo(0,{immediate:true});setTimeout(()=>this.updateScrollState());}
+  }});
+ }
  @HostListener('window:scroll') @HostListener('window:resize')
- updateScrollState(){const top=window.scrollY||document.documentElement.scrollTop;const available=document.documentElement.scrollHeight-window.innerHeight;this.scrollProgress.set(available>0?Math.min(100,(top/available)*100):0);this.showBackToTop.set(top>500);}
- backToTop(){window.scrollTo({top:0,behavior:'smooth'});}
+ updateScrollState(){
+  if(!this.browser)return;
+  const top=window.scrollY||document.documentElement.scrollTop;const available=document.documentElement.scrollHeight-window.innerHeight;
+  this.scrollProgress.set(available>0?Math.min(100,(top/available)*100):0);this.showBackToTop.set(top>500);
+ }
+ backToTop(){this.smooth.scrollTo(0);}
 }

@@ -4,7 +4,11 @@ Four-page Angular website with a PHP email enquiry endpoint, prepared for Hostin
 
 ## Included
 
-- Home, About Us, Services and Contact Us routes.
+- Home, About Us, Services and Contact Us routes, prerendered to static HTML at build time (Angular `outputMode: static`) with hydration. Unknown URLs fall back to `index.csr.html`, which renders the 404 page.
+- Lenis smooth scroll (`src/app/smooth-scroll.ts`) driven by GSAP's ticker and synced to ScrollTrigger; disabled for `prefers-reduced-motion`.
+- Pinned "coast road" journey on the home page (Kanyakumari to Varkala, south to north): an SVG route draws on scroll while a car follows it and each stop's photo wipes in. Mobile, reduced motion and no-JS get a plain card grid.
+- "How it works" steps and an FAQ (native `<details>`, no JS) on the home page. FAQ answers use only facts already on the site; FAQPage and TravelAgency JSON-LD is added to `<head>` so it is in the prerendered HTML. Update `faqs` in `src/app/data.ts` and the schema follows.
+- Quick-form "Prefer WhatsApp?" link that builds the message from the typed details.
 - Layered animated hero, desktop pinned horizontal service cards, stacked service spotlights, scroll reveals and reduced-motion alternatives.
 - Service filters, destination links with prefilled enquiries, phone and optional WhatsApp links.
 - PHP validation, honeypot, same-origin checks, rate limiting and authenticated SMTP through PHPMailer 7.1.1.
@@ -13,7 +17,7 @@ Four-page Angular website with a PHP email enquiry endpoint, prepared for Hostin
 
 ## Current status
 
-- Angular production compilation passes. Initial JS/CSS estimated transfer: approximately 128 kB, excluding fonts and images.
+- Angular production compilation passes and prerenders 4 routes. Initial JS/CSS estimated transfer: approximately 139 kB, excluding fonts and images.
 - PHP syntax check passes in PHP 8.3 (WebAssembly runtime).
 - 12 PHP request checks passed: method/content type, malformed JSON, empty payload, invalid/past dates, invalid email, header injection, honeypot, missing SMTP and service-specific fields.
 - Browser visual, mobile interaction and animation QA could not be completed: the managed preview failed because Angular's memory telemetry is unsupported in its restricted runtime. This does not occur during the successful ordinary production compilation. Test the deployed site in desktop and mobile browsers before launch.
@@ -78,11 +82,12 @@ No database, dashboard, online payment, customer account or booking engine is in
 
 ## Edit content
 
-- `src/app/data.ts`: services and destinations.
+- `src/app/data.ts`: services and destinations (destinations are ordered south to north; the journey section and the route follow this order).
 - `src/app/home.html`: homepage.
 - `src/app/pages.ts`: About, Services, Contact and 404 pages.
 - `src/app/enquiry.ts`: enquiry UI.
-- `src/app/motion.ts`: animations and cleanup.
+- `src/app/motion.ts`: animations and cleanup (hero entrance and scroll depth, reveals, pinned services, parallax).
+- `src/app/smooth-scroll.ts`: Lenis setup and `scrollTo` helper.
 - `src/styles.css`: branding, layout and responsive rules.
 - `backend/enquiry.php`: PHP endpoint.
 - `backend/config.example.php`: SMTP configuration template.

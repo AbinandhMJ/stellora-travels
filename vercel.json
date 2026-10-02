@@ -5,8 +5,9 @@
   "buildCommand": "npx ng build --configuration production",
   "outputDirectory": "dist/browser",
   "rewrites": [
-    { "source": "/about-us", "destination": "/index.html" },
-    { "source": "/services", "destination": "/index.html" },
-    { "source": "/contact-us", "destination": "/index.html" }
+    {
+      "source": "/(.*)",
+      "destination": "/index.csr.html"
+    }
   ]
 }

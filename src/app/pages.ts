@@ -1,14 +1,35 @@
 import {Component,inject,signal} from '@angular/core';
+import {DOCUMENT} from '@angular/common';
 import {RouterLink,ActivatedRoute,Router} from '@angular/router';
 import {FormsModule} from '@angular/forms';
 import {IconComponent} from './icon';
 import {EnquiryComponent} from './enquiry';
 import {MotionDirective} from './motion';
-import {services,destinations} from './data';
+import {services,destinations,faqs,steps} from './data';
 
 @Component({selector:'st-home',standalone:true,imports:[RouterLink,FormsModule,IconComponent,EnquiryComponent,MotionDirective],templateUrl:'./home.html'})
 export class HomeComponent{
- services=services.slice(0,6);destinations=destinations;router=inject(Router);quickService='chauffeur';pickup='';destination='';date='';
+ services=services.slice(0,6);destinations=destinations;faqs=faqs;steps=steps;router=inject(Router);quickService='chauffeur';pickup='';destination='';date='';
+ private doc=inject(DOCUMENT);
+ private static serviceLabels:Record<string,string>={chauffeur:'a car with driver','self-drive':'a self-drive car',bike:'a bike rental',airport:'an airport transfer',tours:'a tour package',wedding:'wedding transport'};
+ constructor(){this.addSchema();}
+ /** FAQPage and business schema as JSON-LD. Added to <head> so it is present in the prerendered HTML. */
+ private addSchema(){
+  if(this.doc.getElementById('st-schema'))return;
+  const data=[
+   {'@context':'https://schema.org','@type':'FAQPage',mainEntity:faqs.map(f=>({'@type':'Question',name:f.q,acceptedAnswer:{'@type':'Answer',text:f.a}}))},
+   {'@context':'https://schema.org','@type':'TravelAgency',name:'Stellora Travels',description:'Car and bike rentals, airport transfers, customised tours and travel assistance in Kanyakumari and Trivandrum.',telephone:'+91 8939783708',email:'stelloratravels@gmail.com',address:{'@type':'PostalAddress',streetAddress:'No. 21, First Floor, behind Indian Bank, Church Road',addressLocality:'Kanyakumari',postalCode:'629702',addressCountry:'IN'},areaServed:['Kanyakumari','Trivandrum']}
+  ];
+  const s=this.doc.createElement('script');s.type='application/ld+json';s.id='st-schema';s.text=JSON.stringify(data);this.doc.head.appendChild(s);
+ }
+ /** WhatsApp message built from whatever the visitor has typed into the quick form. */
+ waLink(){
+  const parts=['Hello Stellora Travels, I\u2019d like to enquire about '+(HomeComponent.serviceLabels[this.quickService]??'a trip')+'.'];
+  if(this.pickup.trim())parts.push('Pickup: '+this.pickup.trim()+'.');
+  if(this.destination.trim())parts.push('Destination: '+this.destination.trim()+'.');
+  if(this.date)parts.push('Date: '+this.date+'.');
+  return 'https://wa.me/918939783708?text='+encodeURIComponent(parts.join(' '));
+ }
  today=new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Kolkata',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
  startEnquiry(){this.router.navigate(['/contact-us'],{queryParams:{service:this.quickService,pickup:this.pickup,destination:this.destination,date:this.date}});}
 }
@@ -16,7 +37,7 @@ export class HomeComponent{
 <div stMotion><section class="page-intro container"><p class="eyebrow">ROOTED IN KANYAKUMARI</p><h1>Your journey.<br><span class="highlight">Our priority.</span></h1><p class="intro-copy">A local starting point for the places you want to go.</p></section>
 <section class="about-story container"><div class="story-image reveal"><img class="parallax-image" src="/assets/kanyakumari.webp" width="900" height="1000" alt="Vivekananda Rock Memorial off the Kanyakumari coast"></div><div class="story-copy reveal"><h2>From our hometown<br>to your next adventure.</h2><p>Based on Church Road in Kanyakumari, Stellora Travels brings rentals, tours and travel booking assistance together in one place.</p><p>Whether you need a bike for the day, a car with a driver, a self-drive rental or a drop at Trivandrum Airport, start by telling us about your plans.</p><p>We also help with customised tours, wedding transport, college industrial visits, visa assistance, tickets and hotel bookings.</p><a routerLink="/services" class="button secondary">Explore services</a></div></section>
 <section class="section soft"><div class="container"><div class="section-heading reveal"><h2>A trip that fits <span>your plans.</span></h2><p>Different journeys call for different ways to travel.</p></div><div class="values-grid"><article class="reveal"><st-icon name="steering-wheel"/><h3>Choose your own pace</h3><p>Self-drive cars, chauffeur-driven trips and bike rentals give you different ways to explore.</p></article><article class="reveal"><st-icon name="map-pin"/><h3>Start locally</h3><p>Visit our Kanyakumari office or send an enquiry for trips around Kanyakumari and Trivandrum.</p></article><article class="reveal"><st-icon name="luggage"/><h3>Bring your plans together</h3><p>Ask about transport, tickets, accommodation and group travel through one point of contact.</p></article></div></div></section>
-<section class="visit-section container section"><div class="reveal"><h2>Let's talk travel.</h2><p>Visit us at No. 21, First Floor, behind Indian Bank,<br>Church Road, Kanyakumari 629702.</p><p><strong>Office hours: 5:00 AM to 12:00 noon IST</strong></p><div class="button-row"><a routerLink="/contact-us" class="button primary">Plan my trip</a><a href="https://maps.app.goo.gl/NKSd1zCMPByPvWEq5" target="_blank" rel="noopener" class="text-link">Find our office</a></div></div><img class="reveal" src="/assets/poovar.jpeg" alt="Palm-lined backwaters at Poovar" width="650" height="450" loading="lazy"></section></div>
+<section class="visit-section container section"><div class="reveal"><h2>Let's talk travel.</h2><p>Visit us at No. 21, First Floor, behind Indian Bank,<br>Church Road, Kanyakumari 629702.</p><p><strong>Office hours: 5:00 AM to 12:00 noon IST</strong></p><div class="button-row"><a routerLink="/contact-us" class="button primary">Plan my trip</a><a href="https://maps.app.goo.gl/NKSd1zCMPByPvWEq5" target="_blank" rel="noopener" class="text-link">Find our office</a></div></div><img class="reveal" src="/assets/poovar.webp" alt="Palm-lined backwaters at Poovar" width="650" height="450" loading="lazy"></section></div>
 `})export class AboutComponent{}
 @Component({selector:'st-services',standalone:true,imports:[RouterLink,IconComponent,MotionDirective],template:`
 <div stMotion><section class="page-intro container"><p class="eyebrow">THE WAY YOU WANT TO TRAVEL</p><h1>More possibilities.<br><span class="highlight">One travel partner.</span></h1><p class="intro-copy">From your daily ride to a well-earned getaway, find the service that fits.</p></section>
