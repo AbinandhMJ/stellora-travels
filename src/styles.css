@@ -43,3 +43,13 @@
 .faq-list details[open] summary:after{transform:rotate(45deg);background:var(--yellow)}
 .faq-list details p{padding:0 54px 26px 4px;font-size:17px}
 @media(max-width:1023px){.steps{grid-template-columns:1fr}.faq-list summary{font-size:18px}.faq-list details p{padding-right:4px;font-size:16px}}
+
+/* Page loading uses the same coastal palette as the rest of the site. */
+.page-loader{position:fixed;inset:0;z-index:100;background:var(--white);display:grid;place-items:center;padding:24px;pointer-events:none}
+.page-loader-content{width:min(280px,100%);text-align:center}
+.page-loader-content>img{margin:0 auto 32px;width:218px;height:62px;object-fit:contain}
+.page-loader-content>p{margin-top:20px;font-size:13px;letter-spacing:.02em}
+.page-loader-track{height:4px;width:180px;margin-inline:auto;overflow:hidden;border-radius:999px;background:var(--soft)}
+.page-loader-track>span{display:block;width:45%;height:100%;border-radius:inherit;background:var(--yellow);animation:page-loader-travel 1.15s ease-in-out infinite}
+@keyframes page-loader-travel{0%{transform:translateX(-100%)}100%{transform:translateX(325%)}}
+@media(prefers-reduced-motion:reduce){.page-loader-track>span{width:100%;animation:none}}
